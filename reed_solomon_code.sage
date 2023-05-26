@@ -153,42 +153,59 @@ def reed_solomon_uncode(p,m,k,n,t, shares_part, alpha_part):
  
 # not tested !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # pour construire la matrice on passe par la transposé
-def reed_solomon_ext_matrix(p,m,k,n,t, matrix_table): # question : est ce que les variables de la matrice 
-	Fpm.<y> = GF(p**m) # we set the polynomials in t 
-	
-	basis = [] # we fix the canonical basis 
-	for i in range (m):
-		basis.append(y**i)	
-	
-	#now we want to get the Fp coefficient of each element of the matrix
-	
+def reed_solomon_ext_matrix(p,m,k,n,t, Ap): # question : est ce que les variables de la matrice 
 	coordinate = []
 	big_matrix = []
-	
-	dimy = len(matrix_table)
-	dimx = len(matrix_table[0])
-	
-	for j in range(dimy):
-		for i in range(m):
-			for k in range(dimx):
-			# reset du vecteur coordinate
-				coordinate = phi(basis[i] * matrix_table[j][k], basis) 
-				if k == 0:
-					big_matrix.append(copy.deepcopy(coordinate)) # on commence une nouvelle ligne
-				else:
-					big_matrix[j*i].extend(copy.deepcopy(coordinate)) # on etend la ligne en question
+	temp = []
+	basis = []
+
+	dimy = len(Ap)
+	dimx = len(Ap[0])
+
+	# series of tests (all should be true)
+	print("test : ", n == dimy)
+
+	for i in range(m):
+		basis.append(y**i)
+
+
+	for j in range(dimx):
 		
-	
-	print("la matrice : ", Matrix(big_matrix).transpose())
-	return Matrix(big_matrix.transpose())
+		for i in range(m):
+			for k in range(dimy): # of length n 
+			# reset du vecteur coordinate
+				print("checkpoint : j ", j)
+				print("k ",k)
+				print(" i(m) ",i)
+				coordinate = phi(basis[i] * Ap[k][j])
+				 
+				if k == 0:
+					temp = (copy.deepcopy(coordinate)) # on commence une nouvelle ligne
+					print("nouvelle ligne")
+						
+				else:
+					temp.extend(copy.deepcopy(coordinate))
+					#big_matrix[j*i].extend(copy(coordinate)) # on etend la ligne en question
+			big_matrix.append(copy.deepcopy(temp))
+
+	print("la matrice : \n", Matrix(big_matrix).transpose())
+	return big_matrix
 				
 							
 # should return a vector of coordinate
 # en partant du principe qu'on a deja définit y la variable de définition du corps
-def phi(element , basis):
-	coordinate = []
-	for i in range(len(basis)):
-		coordinate.append((elem % y**(i+1) ) // y^i)
-	return coordinate	
+def phi(element):
+	v =  vector(element)
+	return list(v)
+	
+def transpose_array_to_array(Darray):
+	print("before transpose : ",Darray) 
+	v = Matrix(Darray)
+	v = v.transpose()
+	v = list(v)
+	for i in range(len(v)):
+		v[i] = list(v[i])
+	print("after transpose : ", v)
+	return v	
 	
 

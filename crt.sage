@@ -25,8 +25,9 @@ m = 3	# 2^3 = 8 > 6
 
 j = 2
 i = 0 # iterator for indices in table
-w = (i for i in Primes() if i<= n)
-
+w = (i for i in Primes() if i<= 2*n)
+j = next(w)
+print("init j :",j)
 
 matrix_before_exp = []
 matrix_after_exp = [] # transposé mais au format array
@@ -36,7 +37,6 @@ prime_number = []
 
 while j <=n:
 	print("checkpoint pour le nombre premier : ", j) 
-	j = next(w) # j is the iterator => prime number until n
 	prime_number.append(j)
 	Fpm.<y> = GF(j**m)
 	# now generate the matrix
@@ -47,36 +47,53 @@ while j <=n:
 	
 	
 	tempso = reed_solomon_ext_matrix(j,m,k,n,t, tempso1)
-	print("tempso : ",tempso) 
-	#matrix_after_exp.append(transpose_array_to_array()) # ca pose probleme
-	
+	matrix_after_exp.append(transpose_array_to_array(tempso)) # ca pose probleme
+	j = next(w) # j is the iterator => prime number until n
+		
 	i+=1
-	
+
 # ici on a un tableau de matrices qui ont pour chaque nombres premiers puissance m
 
 # ================================================================================================================================================================================
 # Array of array (matrix expended) as input
 # crt pour la matrice
 def crt_on_array(array_list, prime_number):
-	#####
+	##### test before #####
+	print("test before the program ")
 	iterate_crt = len(array_list)
-	dimy = array_list[0]
-	dimx = array_list[0][0]
+	print(iterate_crt)
+	print("type dans la matrice")
+	for i in range(iterate_crt):
+		print(type(array_list[i][0][0]))
+	
+	
+	dimy = len(array_list[0])
+	
+	dimx = len(array_list[0][0])
+	print(dimx)
+	print(dimy)
 	values = []
 	
 	crt_solution = []
-	temp = []
-	
+	#temp = []
 	for i in range(dimy):
-	
+		temp = []
 		for j in range(dimx):
 			values = []
+			#print("value")
 			for k in range(iterate_crt):
-				values.append(array_list[k][i][j]) # retrieve the values for the crt application		
+				
+				#print(array_list[k][i][j])
+				#print(int(array_list[k][i][j]))
+				values.append(int(array_list[k][i][j])) # retrieve the values for the crt application	
+			
+			
 			temp.append(crt(values, prime_number))
-		crt_solution.append(copy(temp))
+			print(i*dimx + j)
+		print(temp)
+		crt_solution.append(copy.deepcopy(temp))
 	
-	print("after chinese remainder theorem :", Matrix(crt_solution))		
+	print("after chinese remainder theorem :\n", Matrix(crt_solution))		
 	return crt_solution
 
 # faire la même chose pour les alpha_i
