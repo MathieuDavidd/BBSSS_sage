@@ -20,7 +20,21 @@ def Vandermonde_array(list_xi, n, h):
 def L(t, n):
 	element = [i for i in range(1, t+1)]
 	print("element", element)
-	return Vandermonde_array(element, n,0)
+	return Vandermonde_array(element, n,1)
+	
+# determinant function of the vandermonde matrix
+def delta_L(t, n):
+	if t == n:
+		M = matrix(L(t,n))
+		return M.det()
+	else:
+		print("error on the vandermonde matrix size")
+		return -1
+
+# return the vector needed for the matrix construction of the msp
+def ei(i,t):
+	return [a**t for t in range(1,t+1)]
+
 
 
 	
