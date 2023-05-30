@@ -1,4 +1,5 @@
 import copy
+load("reed_solomon_code.sage")
 ### fichier où on va combiner les matrices (qu'il faudra étendre dans l'expension de corps)
 	# choisir un l tel que l > log(n)
 	# générer une matrice p^l pour tout nombre premier 
@@ -103,8 +104,4 @@ def crt_on_vector_array(array_list, prime_number):
 
 # voir comment faire pour le décodage et les nouveaux alpha_i
 # ================================================================================================================================================================================
-
-desired_matrix = crt_on_array(matrix_after_exp, prime_number)
-
-
 

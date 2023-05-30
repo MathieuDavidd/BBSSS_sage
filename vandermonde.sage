@@ -33,7 +33,7 @@ def delta_L(t, n):
 
 # return the vector needed for the matrix construction of the msp
 def ei(i,t):
-	return [a**t for t in range(1,t+1)]
+	return [i**t for t in range(1,t+1)]
 
 
 

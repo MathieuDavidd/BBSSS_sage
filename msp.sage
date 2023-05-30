@@ -1,5 +1,6 @@
 #### file where we'll construct the msp (the matrix) ####
 import copy
+load("vandermonde.sage")
 
 # we take as input the desired G matrix as array
 # return vectors and submatrix needed to construct the msp (list(g1, g2, ... gn) , list(N1, N2, ..., Ns)) ou les c sont des vecteurs lignes de taille m
@@ -94,6 +95,7 @@ def return_n_s(list_N, S):
 	for i in S:
 		result += list_N[i-1] # car il faut faire correspondre les indices et les listes
 	print(result)
+	return result
 
 """
 test pas très utile mais rapide sur la fonction :
@@ -142,7 +144,49 @@ a = 2016 # 2**5 * 3**2 * 7
 (b,c) = split_ro(a,5)
 print("zeta : ", b)
 print("eta : ", c)
-"""	
+"""
 
-
+# function that should return the glued matrix of the msp 
+def msp_matrix(G, m, n, k, t): 
+	msp_mat = []
+	block_sub_matrix = []
+	vector_sub_matrix = []
+	list_c, list_N = break_matrix(G, m)
+	
+	# appel des fonctions définies plus haut
+	ro = ro(list_N, k-1) # on récupère ro 
+	zeta, eta = split_ro(ro,n)
+	
+	for i in range(n): # construction du block de matrice
+		
+		# premier vecteur  
+		vector_sub_matrix.append(delta_L(n,n)) # determinant d'une matrice carré
+		temp = [0 for k in range (len(G[0]))]
+		vector_sub_matrix += copy.deepcopy(temp)
+		temp = ei(1, k-1) # t = k-1
+		vector_sub_matrix += copy.deepcopy(temp)
+		
+		block_sub_matrix.append(copy.deepcopy(vector_sub_matrix))
+		# fin du block 
+		for j in range(m):
+			vector_sub_matrix = []
+			vector_sub_matrix.append(zeta * list_c[i][j])
+			vector_sum_matrix.extend(list_N[i][j])
+			vector_sub_matrix.extend([0 for k in range(k-1)])
+			block_sub_matrix.append(copy.deepcopy(vector_sub_matrix))
+			
+		msp_mat += copy.deepcopy(block_sub_matrix)
+	print(matrix(msp_mat))		
+	return msp_mat
+	
+""" difficile a tester aussi 
+à voir plus tard
+"""
+			
+		
+		
+	
+	
+	
+	
 
