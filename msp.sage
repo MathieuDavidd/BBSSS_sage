@@ -86,35 +86,63 @@ a = [[1,2,3, 4],[5,6,7,8],[9,10,11,12]]
 gen_sub_matrix(a,2,1)			
 """
 
-##### /!\ pas testé
-
 # return_n_s est une fonction qui doit retourner la sous matrice associée au sous ensemble de [n] S (qui est une liste) en paramètre => dans le papier on parle de mapping 
 # surjectif mais ici on ne prendra en compte qu'un mapping bijectif : on va juste coller les matrices N_i une a une ou i appartient a S 
 # ici on a juste a fusionner avec loperateur +
 def return_n_s(list_N, S):
 	result = []
 	for i in S:
-	result += list_N[i-1] # car il faut faire correspondre les indices et les listes
+		result += list_N[i-1] # car il faut faire correspondre les indices et les listes
 	print(result)
 
 """
 test pas très utile mais rapide sur la fonction :
-a = [[[1,2],[3,4]],[[5,6],[7,8]]]
-return_n_s(a,[1,2])			
+a = [[[1,2],[3,4]],[[5,6],[7,8]], [[9,10],[11,12]]]
+return_n_s(a,[1,3])
 """
 
+
 # /!\ a finir 
-# function qui doit retourner le produit ro(N) du papier : prend en entrée la liste des matrices Ni retournée par l'algorithme "break_matrix" (on suppose que la liste en entrée est 
-# non null)
-def ro(list_N):
+# function qui doit retourner le produit ro(N) du papier : prend en entrée la liste des matrices Ni retournée par l'algorithme "break_matrix" (on suppose que la liste en entrée 
+# est non null)
+# /!\ on doit avoir le t (ou k) en paramètre
+def ro(list_N, t):
 	m = len(list_N[0])
 	n = len(list_N)
-	list_s = gen_comb_N(n, size) # doit générer tout les sous-ensembles de [n] de taille 'size'
+	list_s = gen_comb_N(n, t) # doit générer tout les sous-ensembles de [n] de taille 't'
 	
-	product = 0
+	product = 1
 	
 	for s in list_s:
-		list_sub_mat = gen_sub_matrix(array, size) # retourne les sous matrice de taille
+		NS = return_n_s(list_N, s)
+		list_sub_mat = gen_sub_matrix(NS, m*t) # retourne les sous matrices de taille
+		for m in list_sub_mat:
+			if matrix(m).det() != 0:
+				product *= matrix(m).det()
 	
+# compliqué a tester un peu 
+
+# split_ro prend en paramètre un nombre (qui est censé être le ro de la construction) et n, => doit renvoyer zeta_n et eta_n
+def split_ro(ro, n):
+	eta = 1
+	zeta = 1
+	F = factor(ro)
+	F = list(F)
+	for i in F:
+		(a,b) = i
+		if a<=n:
+			eta *= a**b
+		else:
+			zeta *= a**b
+	return (zeta, eta)
+
+"""
+test pas très utile mais rapide sur la fonction :
+a = 2016 # 2**5 * 3**2 * 7
+(b,c) = split_ro(a,5)
+print("zeta : ", b)
+print("eta : ", c)
+"""	
+
 
 
