@@ -203,7 +203,7 @@ def msp_matrix(G, m, n, k, t):
 		vector_sub_matrix.append(delta_L(n,n)) # determinant d'une matrice carré
 		temp = [0 for k in range (len(G[0])-1)]
 		vector_sub_matrix += copy.deepcopy(temp)
-		temp = ei(1, k-1) # t = k-1
+		temp = ei(i+1, k-1) # t = k-1
 		vector_sub_matrix += copy.deepcopy(temp)
 		
 		block_sub_matrix = []
