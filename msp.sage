@@ -134,7 +134,6 @@ return_n_s(a,[1,3])
 """
 
 
-# /!\ a finir 
 # function qui doit retourner le produit ro(N) du papier : prend en entrée la liste des matrices Ni retournée par l'algorithme "break_matrix" (on suppose que la liste en entrée 
 # est non null)
 # /!\ on doit avoir le t (ou k) en paramètre
@@ -203,7 +202,7 @@ def msp_matrix(G, m, n, k, t):
 		vector_sub_matrix.append(delta_L(n,n)) # determinant d'une matrice carré
 		temp = [0 for k in range (len(G[0])-1)]
 		vector_sub_matrix += copy.deepcopy(temp)
-		temp = ei(i+1, k-1) # t = k-1
+		temp = ei(1+i, k-1) # t = k-1
 		vector_sub_matrix += copy.deepcopy(temp)
 		
 		block_sub_matrix = []
