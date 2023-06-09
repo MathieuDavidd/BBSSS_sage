@@ -2,6 +2,9 @@
 BBSSS construction of Cramer & Xing in "Blackbox Secret Sharing Revisited: A Coding-Theoretic Approach
 with Application to Expansionless Near-Threshold Schemes" of a Monotone Span Program matrix with Reed Solomon Linear Code
 
+# Disclaimer
+This repository is on the "Draft branch" meaning that the code is not fully tested and there is still debuging traces of programs
+
 # Content of the repository
 Reed_Solomon_code.sage -> methods to create a RS code with the desired parameters, methods where we can extend matrices from an extension field to a prime field
 Main_simple_Reed_solomon.sage -> main to use simple ad hoc reed solomon codes (with encode and decode methods)
