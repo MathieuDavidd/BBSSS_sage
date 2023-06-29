@@ -8,20 +8,20 @@ import copy
 
 # principal constant parametrizable
 
-def reed_solomon_code(p,m,k,n,t):
+def reed_solomon_code(p,m,k,n):
 	Fpm.<y> = GF(p**m)
 
-	alpha_array = reed_solomon_alpha(p,m,k,n,t)
+	alpha_array = reed_solomon_alpha(p,m,k,n)
 		
 	f_array = []
 	FX.<x> = Fpm[]
 	
 	# prendre la base canonique (plus simple)
-	for i in range(t+1):
+	for i in range(k):
 		f_array.append(x**i)
 		
-	Ap = reed_solomon_matrix(p,m,k,n,t, alpha_array, f_array) # getting the matrix of the reed solomon code
-	Msg = message(p,m,k,n,t, 1) # random set to 1
+	Ap = reed_solomon_matrix(p,m,k,n, alpha_array, f_array) # getting the matrix of the reed solomon code
+	Msg = message(p,m,k,n, 1) # random set to 1
 	
 	Shares = Msg * Ap.transpose()
 	
@@ -29,7 +29,7 @@ def reed_solomon_code(p,m,k,n,t):
 	return (alpha_array, Shares)
 		
 
-def reed_solomon_alpha(p,m,k,n,t):
+def reed_solomon_alpha(p,m,k,n):
 	alpha_array = [] # choosing randomly alpha1, alpha2 ..., alphan
 	for i in range(n):
 		alphai = Fpm.random_element()
@@ -38,12 +38,12 @@ def reed_solomon_alpha(p,m,k,n,t):
 		alpha_array.append(alphai)	
 	return alpha_array
 
-def reed_solomon_matrix(p,m,k,n,t, alpha_array, polynomial_basis):
+def reed_solomon_matrix(p,m,k,n, alpha_array, polynomial_basis):
 
 	if polynomial_basis == []:
 		Fpm.<y> = GF(p**m)
 		FX.<x> = Fpm[]
-		for i in range(t+1):
+		for i in range(k):
 			polynomial_basis.append(x**i)
 		
 	Fpm.<y> = GF(p**m)
@@ -52,7 +52,7 @@ def reed_solomon_matrix(p,m,k,n,t, alpha_array, polynomial_basis):
 	Ap = []
 	temp_vect = []
 	for i in range (n):
-		for j in range (t):
+		for j in range (k):
 			if i == 0:
 				temp_vect.append( (polynomial_basis[j])(alpha_array[i]) ) # evaluation de polynome ??
 			else:
@@ -61,12 +61,12 @@ def reed_solomon_matrix(p,m,k,n,t, alpha_array, polynomial_basis):
 	return Matrix(Ap)
 	
 ### same function as above but return an array, not a
-def reed_solomon_array(p,m,k,n,t, alpha_array, polynomial_basis):
+def reed_solomon_array(p,m,k,n, alpha_array, polynomial_basis):
 
 	if polynomial_basis == []:
 		Fpm.<y> = GF(p**m)
 		FX.<x> = Fpm[]
-		for i in range(t+1):
+		for i in range(k):
 			polynomial_basis.append(x**i)
 		
 	Fpm.<y> = GF(p**m)
@@ -75,7 +75,7 @@ def reed_solomon_array(p,m,k,n,t, alpha_array, polynomial_basis):
 	Ap = []
 	temp_vect = []
 	for i in range (n):
-		for j in range (t):
+		for j in range (k):
 			if i == 0:
 				temp_vect.append( (polynomial_basis[j])(alpha_array[i]) ) # evaluation de polynome ??
 			else:
@@ -84,15 +84,10 @@ def reed_solomon_array(p,m,k,n,t, alpha_array, polynomial_basis):
 	return Ap
 	
 	
-	
-# fonction renvoie la matrice étendue
-def reed_solomon_expension(p, m, matrice):
-	return 0
-
 
 # should return a message generated randomly if needed (random = 1) of the vector format
 
-def message(p,m,k,n,t ,random):
+def message(p,m,k,n,random):
 	
 	message_t = []
 	Fpm.<y> = GF(p**m)
@@ -129,7 +124,7 @@ def return_poly_interpolation(coded_part, set_of_polynomial, alpha_part):
 	
 # do the reverse operation of reed-solomon code
 
-def reed_solomon_uncode(p,m,k,n,t, shares_part, alpha_part):
+def reed_solomon_uncode(p,m,k,n, shares_part, alpha_part):
 	if len(shares_part)<k:
 		print("not enough informations to retrieve the message")
 		return 1
@@ -153,42 +148,59 @@ def reed_solomon_uncode(p,m,k,n,t, shares_part, alpha_part):
  
 # not tested !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # pour construire la matrice on passe par la transposé
-def reed_solomon_ext_matrix(p,m,k,n,t, matrix_table): # question : est ce que les variables de la matrice 
-	Fpm.<y> = GF(p**m) # we set the polynomials in t 
-	
-	basis = [] # we fix the canonical basis 
-	for i in range (m):
-		basis.append(y**i)	
-	
-	#now we want to get the Fp coefficient of each element of the matrix
-	
+def reed_solomon_ext_matrix(p,m,k,n, Ap): # question : est ce que les variables de la matrice 
 	coordinate = []
 	big_matrix = []
-	
-	dimy = len(matrix_table)
-	dimx = len(matrix_table[0])
-	
-	for j in range(dimy):
-		for i in range(m):
-			for k in range(dimx):
-			# reset du vecteur coordinate
-				coordinate = phi(basis[i] * matrix_table[j][k], basis) 
-				if k == 0:
-					big_matrix.append(copy.deepcopy(coordinate)) # on commence une nouvelle ligne
-				else:
-					big_matrix[j*i].extend(copy.deepcopy(coordinate)) # on etend la ligne en question
+	temp = []
+	basis = []
+
+	dimy = len(Ap)
+	dimx = len(Ap[0])
+
+	# series of tests (all should be true)
+	#print("test : ", n == dimy)
+
+	for i in range(m):
+		basis.append(y**i)
+
+
+	for j in range(dimx):
 		
-	
-	print("la matrice : ", Matrix(big_matrix).transpose())
-	return Matrix(big_matrix.transpose())
+		for i in range(m):
+			for k in range(dimy): # of length n 
+			# reset du vecteur coordinate
+				#print("checkpoint : j ", j)
+				#print("k ",k)
+				#print(" i(m) ",i)
+				coordinate = phi(basis[i] * Ap[k][j])
+				 
+				if k == 0:
+					temp = (copy.deepcopy(coordinate)) # on commence une nouvelle ligne
+					#print("nouvelle ligne")
+						
+				else:
+					temp.extend(copy.deepcopy(coordinate))
+					#big_matrix[j*i].extend(copy(coordinate)) # on etend la ligne en question
+			big_matrix.append(copy.deepcopy(temp))
+
+	#print("la matrice : \n", Matrix(big_matrix).transpose())
+	return big_matrix
 				
 							
 # should return a vector of coordinate
 # en partant du principe qu'on a deja définit y la variable de définition du corps
-def phi(element , basis):
-	coordinate = []
-	for i in range(len(basis)):
-		coordinate.append((elem % y**(i+1) ) // y^i)
-	return coordinate	
+def phi(element):
+	v =  vector(element)
+	return list(v)
+	
+def transpose_array_to_array(Darray):
+	#print("before transpose : ",Darray) 
+	v = Matrix(Darray)
+	v = v.transpose()
+	v = list(v)
+	for i in range(len(v)):
+		v[i] = list(v[i])
+	#print("after transpose : ", v)
+	return v	
 	
 
