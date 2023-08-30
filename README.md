@@ -2,7 +2,7 @@
 Black Box Secret Sharing Scheme proposed by Ronald Cramer and Chaoping Xing. Blackbox secret sharing revisited: A
 coding-theoretic approach with application to expansionless near-threshold schemes. Cryptology ePrint Archive, Paper 2019/1134, 2019. https://eprint.iacr.org/2019/1134.
 
-This partial implementation has been done during a two month internship at Laboratoire Jean Kuntzman, UGA. The implementation cover only the threshold secret sharing scheme based on Reed-Solomon codes.
+This partial implementation has been done during a two month internship at Laboratoire Jean Kuntzman, UGA. The implementation covers only the threshold secret sharing scheme based on Reed-Solomon codes.
 
 # Interface
 The interface provided here is located in the msp_interface.sage file. The interface gives 3 main methods : 
